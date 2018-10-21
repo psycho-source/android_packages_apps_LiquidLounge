@@ -33,6 +33,15 @@
         android:defaultValue="3"
         android:dependency="show_clear_all_recents" />
 
+    <com.liquid.liquidlounge.preferences.SystemSettingSeekBarPreference
+        android:key="recents_corner_radius"
+        android:title="@string/recents_corner_radius"
+        android:max="16"
+        android:min="0"
+        liquid:interval="1"
+        android:defaultValue="2"
+        android:persistent="false" />
+
     <Preference
         android:key="hide_app_from_recents"
         android:title="@string/hide_apps_from_recents_title"

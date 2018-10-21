@@ -30,6 +30,8 @@ import android.support.v7.preference.Preference.OnPreferenceChangeListener;
 import android.support.v14.preference.SwitchPreference;
 import android.provider.Settings;
 
+import com.liquid.liquidlounge.preferences.SystemSettingSeekBarPreference;
+
 import com.android.settings.R;
 import com.android.settings.SettingsPreferenceFragment;
 import com.android.internal.logging.nano.MetricsProto;
@@ -38,8 +40,11 @@ public class RecentsSettings extends SettingsPreferenceFragment
         implements OnPreferenceChangeListener {
 
     private static final String RECENTS_CLEAR_ALL_LOCATION = "recents_clear_all_location";
+    private static final String RECENTS_RADIUS = "recents_corner_radius";
+
     private ListPreference mRecentsClearAllLocation;
     private SwitchPreference mRecentsClearAll;
+    private SystemSettingSeekBarPreference mCornerRadius;
 
     @Override
     public void onCreate(Bundle icicle) {
@@ -57,6 +62,13 @@ public class RecentsSettings extends SettingsPreferenceFragment
         mRecentsClearAllLocation.setSummary(mRecentsClearAllLocation.getEntry());
         mRecentsClearAllLocation.setOnPreferenceChangeListener(this);
 
+        //Recents corner radius
+        mCornerRadius = (SystemSettingSeekBarPreference) findPreference(RECENTS_RADIUS);
+        int cornerRad = Settings.System.getIntForUser(resolver,
+                Settings.System.RECENTS_CORNER_RADIUS, 2, UserHandle.USER_CURRENT);
+        mCornerRadius.setValue(cornerRad);
+        mCornerRadius.setOnPreferenceChangeListener(this);
+
     }
 
     @Override
@@ -68,7 +80,12 @@ public class RecentsSettings extends SettingsPreferenceFragment
                     Settings.System.RECENTS_CLEAR_ALL_LOCATION, location, UserHandle.USER_CURRENT);
             mRecentsClearAllLocation.setSummary(mRecentsClearAllLocation.getEntries()[index]);
         return true;
-        }
+      } else if (preference == mCornerRadius) {
+        int value = Integer.valueOf((String) objValue);
+        Settings.System.putIntForUser(getActivity().getContentResolver(),
+                Settings.System.RECENTS_CORNER_RADIUS, value, UserHandle.USER_CURRENT);
+        return true;
+      }
     return false;
 
     }
